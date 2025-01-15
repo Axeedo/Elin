@@ -1,9 +1,8 @@
 # Use postgres/example user/password credentials
-version: "3.9"
 
 services:
   db:
-    image: postgres
+    image: postgres:17.2-alpine
     restart: always
     # set shared memory limit when using docker-compose
     shm_size: 128mb
@@ -13,8 +12,17 @@ services:
     #    target: /dev/shm
     #    tmpfs:
     #      size: 134217728 # 128*2^20 bytes = 128Mb
+    ports:
+      - 5432:5432
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_USER: elin
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: elin
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./migration/tables.sql:/docker-entrypoint-initdb.d/tables.sql
+    networks:
+      - elin-network
 
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
@@ -23,6 +31,14 @@ services:
       - "127.0.0.1:4566:4566" # LocalStack Gateway
     environment:
       - DEBUG=${DEBUG:-0}
+    networks:
+      - elin-network
     # volumes:
     #   - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
     #   - "/var/run/docker.sock:/var/run/docker.sock"
+
+volumes:
+  db-data:
+
+networks:
+  elin-network:

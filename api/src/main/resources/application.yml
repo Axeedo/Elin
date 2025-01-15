@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: elin
+  datasource:
+    url: jdbc:postgresql://localhost:5432/elin
+    username: elin
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
